@@ -72,8 +72,8 @@ int main(){
 		std::string rss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Rss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
 		std::string pss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Pss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
 		std::string swap = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i swap | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
-		std::string maj = exec(std::string("ps -o maj_flt"+ line +"| awk 'NR==2'").c_str())
-		std::string min = exec(std::string("ps -o min_flt"+ line +"| awk 'NR==2'").c_str())
+		std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
+		std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
 		
 		if(isInteger (rss) && isInteger(pss) && isInteger(swap) && isInteger(maj) && isInteger(min))
 		{
