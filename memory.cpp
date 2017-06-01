@@ -29,6 +29,15 @@ std::string exec(const char* cmd) {
     }
     return result;
 }
+
+std::string exec(const char* path, const char* cmd) {
+	struct stat sb;
+
+	if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode)){
+		return exec(cmd);
+	}return "";
+}
+
 bool isInteger(const std::string & s)
 {
    if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
@@ -54,17 +63,17 @@ int main(){
 		
 		process x;
 		x.pid = stoi(line);
-		std::string rss = exec((std::string( "cat " + path + "smaps | grep -i Rss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
+		std::string rss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Rss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
 		if(isInteger (rss))
 		{
 			x.rss = stoi(rss);
 		}
-		std::string pss = exec((std::string( "cat " + path + "smaps | grep -i Pss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
+		std::string pss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Pss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
 		if( isInteger(pss))
 		{
 			x.pss = stoi(rss);
 		}
-		std::string swap = exec((std::string( "cat " + path + "smaps | grep -i swap | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
+		std::string swap = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i swap | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
 		if(isInteger(swap))
 		{
 			x.swap = stoi(rss);
