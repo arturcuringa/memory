@@ -121,7 +121,7 @@ int main(){
 				}
 			}
 
-			if(check(std::string("/proc/"+ line +"/stat").c_str())){
+			//if(check(std::string("/proc/"+ line +"/stat").c_str())){
 				std::ifstream fs;
 				std::string trash;
 
@@ -137,7 +137,7 @@ int main(){
 				fs>>x.majfl;
 				
 				fs.close();
-			}
+			//}
 			// std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
 			// std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
 	
