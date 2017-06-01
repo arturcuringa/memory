@@ -15,6 +15,7 @@ typedef struct{
 	long unsigned int rss;
 	long unsigned int pss;
 	long unsigned int swap;
+	long unsigned int cache;
 }process;
 
 std::string exec(const char* cmd) {
@@ -39,6 +40,13 @@ int main(){
 	std::string line;
 	getline(f,line);
 	std::vector<process> p_vector;
+	process y;
+	y.pid = -1;
+	y.rss = stoi(exec((std::string("cat /proc/meminfo | grep -i MemTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
+	y.pss = y.rss;
+	y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
+	y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
+	
 	while(getline(f,line))
 	{
 
