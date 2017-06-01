@@ -13,6 +13,7 @@ long unsigned int find_fl(std::string pid, int numOfInt){
 		}
 		fs>>fl;
 	}
+	fs.close();
 	return fl;
 }
 long unsigned int find_minfl(std::string pid){

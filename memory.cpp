@@ -19,7 +19,7 @@ typedef struct{
 	long unsigned int majfl;
 	long unsigned int minfl;
 }process;
-
+/////////////////////////////////////////////
 std::string exec(const char* cmd) {
     std::array<char, 128> buffer;
     std::string result;
@@ -39,7 +39,7 @@ std::string exec(const char* path, const char* cmd) {
 		return exec(cmd);
 	}return "";
 }
-
+////////////////////////////////////////////////////
 bool check(const char* path) {
 	struct stat sb;
 
@@ -54,6 +54,8 @@ bool isInteger(const std::string & s)
    if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
    return true;
 }
+///////////////////////////////////////////////////////////
+
 int main(){
 	//while (true){
 	std::istringstream f (exec((std::string("ps aux | awk '{print $2}' ")).c_str()));
@@ -85,6 +87,9 @@ int main(){
 			x.rss = 0;
 			x.pss = 0;
 			x.swap = 0;
+			x.majfl = 0;
+			x.minfl = 0;
+
 			long unsigned int rss, pss, swap;
 			while(getline(f,l))
 			{
@@ -115,6 +120,24 @@ int main(){
 					x.swap += swap;
 				}
 			}
+
+			if(check(std::string("/proc/"+ line +"/stat").c_str())){
+				std::ifstream fs;
+				std::string trash;
+
+				fs.open(std::string("/proc/"+ line +"/stat").c_str(), std::ifstream::in );
+				
+				if(fs.is_open()){
+					for (int i=1; i<10; ++i){
+						fs>>trash;
+					}
+					fs>>x.minfl;
+				}
+				fs>>trash;
+				fs>>x.majfl;
+				
+				fs.close();
+			}
 			// std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
 			// std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
 	
@@ -138,6 +161,8 @@ int main(){
 						<< p_vector[i].rss <<"\t" 
 						<< p_vector[i].pss <<"\t"
 						<< p_vector[i].swap << "\t"
+						<< p_vector[i].minfl << "\t"
+						<< p_vector[i].majfl << "\t"
 						<< std::endl;
 		}
 		for (int i=0; i< 10; ++i)
