@@ -46,7 +46,7 @@ int main(){
 	y.pss = y.rss;
 	y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
 	y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
-	
+	std::cout << " Total" << " " << y.rss << " " << y.pss << " " << y.swap << " " << y.cache << std::endl;
 	while(getline(f,line))
 	{
 
