@@ -46,7 +46,7 @@ bool isInteger(const std::string & s)
    return true;
 }
 int main(){
-	
+	//while (true){
 	std::istringstream f (exec((std::string("ps aux | awk '{print $2}' ")).c_str()));
 	std::string line;
 	getline(f,line);
@@ -75,7 +75,7 @@ int main(){
 		std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
 		std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
 		
-		if(isInteger (rss) && isInteger(pss) && isInteger(swap) && isInteger(maj) && isInteger(min))
+		if(isInteger (rss) && isInteger(pss) && isInteger(swap) )
 		{
 			x.rss = stoi(rss);
 			x.pss = stoi(rss);
@@ -86,10 +86,22 @@ int main(){
 		}
 		//std::cout << line << std::endl;
 	}
-
-	for(int i=0; i<10; ++i){
-
+	std::cout<< "PID" << "\t" << "RSS" <<"\t"<< "PSS" <<"\t"
+				<< "SWAP" << "\t"<< "MAJFL" << "\t" << "MINFL" << std::endl;
+	
+	while(true){
+		for(int i=0; i < 10; ++i){
+			std::cout << p_vector[i].pid << "\t" 
+						<< p_vector[i].rss <<"\t" 
+						<< p_vector[i].pss <<"\t"
+						<< p_vector[i].swap << "\t"
+						<< p_vector[i].majfl << "\t" 
+						<< p_vector[i].minfl << std::endl;
+		}
+		for (int i=0; i< 10; ++i)
+			std::cout<<"\033[A";
 	}
+
 
 
 	return 0;
