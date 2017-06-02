@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
+#include <algorithm>
 
 typedef struct{
 	int pid;
@@ -18,7 +19,43 @@ typedef struct{
 	long unsigned int cache;
 	long unsigned int majfl;
 	long unsigned int minfl;
+
+
 }process;
+
+struct functor 
+{
+	int _x;
+	functor(int x){_x = x;}
+	bool operator()(const process a, const process b)
+	{
+		switch(_x)
+		{
+			case 0:
+				return a.pid > b.pid;
+				break;
+			case 1:
+				return a.rss > b.rss;
+				break;
+			case 2:
+				return a.pss > b.pss;
+				break;
+			case 3:
+				return a.swap > b.swap;
+				break;
+			case 4:
+				return a.cache > b.cache;
+				break;
+			case 5:
+				return a.majfl > b.majfl;
+				break;
+			case 6:
+				return a.minfl > b.minfl;
+				break;
+
+		}
+	}
+};
 /////////////////////////////////////////////
 std::string exec(const char* cmd) {
     std::array<char, 128> buffer;
@@ -156,6 +193,7 @@ int main(){
 				<< "SWAP" << "\t"<< "MAJFL" << "\t" << "MINFL" << std::endl;
 	
 	while(true){
+		sort(p_vector.begin(), p_vector.end(), functor(1));
 		for(int i= 0; i < 10; ++i){
 			std::cout << p_vector[i].pid << "\t" 
 						<< p_vector[i].rss <<"\t" 
