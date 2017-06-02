@@ -34,7 +34,7 @@ struct functor
 		switch(_x)
 		{
 			case 0:
-				return a.pid > b.pid;
+				return a.pid < b.pid;
 				break;
 			case 1:
 				return a.rss > b.rss;
@@ -104,27 +104,36 @@ int main(int argc, char* argv[]){
 		{
 			f_x = 0;
 		}
-		if(std::string(argv[1]) == "-rss")
+		else if(std::string(argv[1]) == "-rss")
 		{
 			f_x = 1;
 		}
-		if(std::string(argv[1]) ==  "-pss")
+		else if(std::string(argv[1]) ==  "-pss")
 		{
 			f_x = 2;
 
 		}
-		if(std::string(argv[1]) == "-swap")
+		else if(std::string(argv[1]) == "-swap")
 		{
 			f_x = 3;
 		}
-		if(std::string(argv[1]) == "-majf")
+		else if(std::string(argv[1]) == "-majf")
 		{
 			f_x = 5;
 		}
-		if(std::string(argv[1]) ==  "-minf")
+		else if(std::string(argv[1]) ==  "-minf")
 		{
 			f_x = 6;
-		}
+		}else{
+			std::cout<<"Use one of these options (-pss by default): \n"<<
+						"-pid\n"<<
+						"-rss\n"<<
+						"-swap\n"<<
+						"-majf\n"<<
+						"-minf\n"<<
+						std::endl;
+			return 1;
+		} 
 	}else
 	{
 		f_x = 2;
@@ -142,8 +151,19 @@ int main(int argc, char* argv[]){
 		y.pss = y.rss;
 		y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
 		y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
-		std::cout << " Total" << " " << y.rss << " " << y.pss << " " << y.swap << " " << y.cache << std::endl;
 		
+		
+		std::cout<< std::setw(8) << std::left << "Total" << 
+					std::setw(8) << std::left << "RSS" << //std::setw(8) << std::left << 
+					std::setw(8) << std::left << "PSS" << //std::setw(8) << std::left <<
+					std::setw(8) << std::left << "CACHE" << std::endl;
+
+		std::cout 	<< std::setw(8) << std::left << " " //<< std::setw(8)//<< "\t" 
+					<< std::setw(8) << std::left << y.rss //<< std::setw(8)//<<"\t" 
+					<< std::setw(8) << std::left << y.pss //<< std::setw(8)//<<"\t"
+					<< std::setw(8) << std::left << y.cache //<< std::setw(8)//<< "\t"
+					<< std::endl<<std::endl;
+
 		while(getline(f,line))
 		{
 
@@ -242,7 +262,7 @@ int main(int argc, char* argv[]){
 						<< std::setw(8) << std::left << p_vector[i].minfl //<< "\t"
 						<< std::endl;
 		}
-		for (int i=0; i< 12; ++i)
+		for (int i=0; i< 14; ++i)
 			std::cout<<"\033[A";
 	}
 	return 0;
