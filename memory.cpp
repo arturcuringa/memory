@@ -159,18 +159,26 @@ int main(int argc, char* argv[]){
 		w.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapFree | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
 		
 		
-		std::cout<< std::setw(16) << std::left << "Total" << 
-					std::setw(16) << std::left << "RSS" << 
-					std::setw(16) << std::left << "PSS" <<
-					std::setw(16) << std::left << "SWAP" <<
-					std::setw(16) << std::left << "CACHE" << std::endl;
+		std::cout<< std::setw(10) << std::left << "" << 
+					std::setw(10) << std::left << "RSS" << 
+					std::setw(10) << std::left << "PSS" <<
+					std::setw(10) << std::left << "SWAP"
+					<<std::setw(10) << std::left << "CACHE" 
+					<< std::endl;
 
-		std::cout 	<< std::setw(8) << " "  
-					<< y.rss - w.rss  << "/"<< std::setw(14) << w.rss 
-					<< y.pss - w.pss << "/" << std::setw(14) << w.pss
-					<<  y.swap - y.swap << "/" << std::setw(14) << w.swap 
-					<<  y.cache 
-					<< std::endl<<std::endl;
+		std::cout 	<< std::setw(10) << std::left <<"Total"
+					<< std::setw(10) << std::left << y.rss 
+					<< std::setw(10) << std::left << y.pss 
+					<< std::setw(10) << std::left << y.swap 
+					<< std::setw(10) << std::left << y.cache
+					<< std::endl;
+
+		std::cout 	<< std::setw(10) << std::left <<"Used"
+					<< std::setw(10) << std::left << y.rss - w.rss
+					<< std::setw(10) << std::left << y.rss - w.rss
+					<< std::setw(10) << std::left << y.rss - w.rss
+					<< std::setw(10) << std::left << " "
+					<< std::endl << std::endl;
 
 
 		while(getline(f,line))
@@ -246,7 +254,8 @@ int main(int argc, char* argv[]){
 			}
 		 }
 		
-		std::cout<< std::setw(8) << std::left << "PID" << 
+		std::cout<< "\33[30;47m"<<
+					std::setw(8) << std::left << "PID" << 
 					std::setw(8) << std::left << "RSS" << 
 					std::setw(8) << std::left << "RSS(%)" << 
 					std::setw(8) << std::left << "PSS" << 
@@ -254,7 +263,9 @@ int main(int argc, char* argv[]){
 					std::setw(8) << std::left << "SWAP" << 
 					std::setw(8) << std::left << "MAJFL" << 
 					std::setw(10) << std::left << "MINFL" <<
-					std::setw(8) << std::left << "NOME" << std::endl;
+					std::setw(20) << std::left << "NOME" <<
+					std::setw(20) << std::left<<
+					"\33[0m"<< std::endl;
 	
 		sort(p_vector.begin(), p_vector.end(), functor(f_x));
 		
@@ -272,7 +283,7 @@ int main(int argc, char* argv[]){
 						<< std::setw(8) << std::left << p_vector[i].name 
 						<< std::endl;
 		}
-		for (int i=0; i< 14; ++i)
+		for (int i=0; i< 15; ++i)
 			std::cout<<"\033[A";
 	}
 	return 0;
