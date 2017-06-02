@@ -251,6 +251,7 @@ int main(int argc, char* argv[]){
 					std::setw(8) << std::left << "NOME" << std::endl;
 	
 		sort(p_vector.begin(), p_vector.end(), functor(f_x));
+		
 		double rssTotal= y.rss;
 		double pssTotal= y.pss;
 		for(int i= 0; i < 10; ++i){
