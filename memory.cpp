@@ -21,7 +21,7 @@ typedef struct{
 	long unsigned int cache;
 	long unsigned int majfl;
 	long unsigned int minfl;
-
+	std::string name;
 
 }process;
 
@@ -220,7 +220,9 @@ int main(int argc, char* argv[]){
 					fs.open(std::string("/proc/"+ line +"/stat").c_str(), std::ifstream::in );
 					
 					if(fs.is_open()){
-						for (int i=1; i<10; ++i){
+						fs>>trash;
+						fs>>x.name;
+						for (int i=3; i<10; ++i){
 							fs>>trash;
 						}
 						fs>>x.minfl;
@@ -252,7 +254,8 @@ int main(int argc, char* argv[]){
 					std::setw(8) << std::left << "PSS(%)" << //std::setw(8) << std::left <<
 					std::setw(8) << std::left << "SWAP" << //std::setw(8) << std::left <<
 					std::setw(8) << std::left << "MAJFL" << //std::setw(8) << std::left <<
-					std::setw(8) << std::left << "MINFL" << std::endl;
+					std::setw(8) << std::left << "MINFL" <<
+					std::setw(8) << std::left << "NOME" << std::endl;
 	
 		sort(p_vector.begin(), p_vector.end(), functor(f_x));
 		double rssTotal= y.rss;
@@ -266,6 +269,7 @@ int main(int argc, char* argv[]){
 						<< std::setw(8) << std::left << p_vector[i].swap //<< std::setw(8)//<< "\t"
 						<< std::setw(8) << std::left << p_vector[i].majfl //<< std::setw(8)//<< "\t"
 						<< std::setw(8) << std::left << p_vector[i].minfl //<< "\t"
+						<< std::setw(8) << std::left << p_vector[i].name //<< "\t"
 						<< std::endl;
 		}
 		for (int i=0; i< 14; ++i)
