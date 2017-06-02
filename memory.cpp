@@ -247,16 +247,22 @@ int main(int argc, char* argv[]){
 		
 		std::cout<< std::setw(8) << std::left << "PID" << 
 					std::setw(8) << std::left << "RSS" << //std::setw(8) << std::left << 
+					std::setw(8) << std::left << "RSS(%)" << //std::setw(8) << std::left << 
 					std::setw(8) << std::left << "PSS" << //std::setw(8) << std::left <<
+					std::setw(8) << std::left << "PSS(%)" << //std::setw(8) << std::left <<
 					std::setw(8) << std::left << "SWAP" << //std::setw(8) << std::left <<
 					std::setw(8) << std::left << "MAJFL" << //std::setw(8) << std::left <<
 					std::setw(8) << std::left << "MINFL" << std::endl;
 	
 		sort(p_vector.begin(), p_vector.end(), functor(f_x));
+		double rssTotal= y.rss;
+		double pssTotal= y.pss;
 		for(int i= 0; i < 10; ++i){
 			std::cout 	<< std::setw(8) << std::left << p_vector[i].pid //<< std::setw(8)//<< "\t" 
 						<< std::setw(8) << std::left << p_vector[i].rss //<< std::setw(8)//<<"\t" 
+						<< std::setw(8) << std::left << std::setprecision(2)<<(p_vector[i].rss/rssTotal)*100 //<< std::setw(8)//<<"\t" 
 						<< std::setw(8) << std::left << p_vector[i].pss //<< std::setw(8)//<<"\t"
+						<< std::setw(8) << std::left << std::setprecision(2)<<(p_vector[i].pss/pssTotal)*100 //<< std::setw(8)//<<"\t"
 						<< std::setw(8) << std::left << p_vector[i].swap //<< std::setw(8)//<< "\t"
 						<< std::setw(8) << std::left << p_vector[i].majfl //<< std::setw(8)//<< "\t"
 						<< std::setw(8) << std::left << p_vector[i].minfl //<< "\t"
