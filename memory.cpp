@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <algorithm>
+#include <iomanip>
 
 typedef struct{
 	int pid;
@@ -223,18 +224,22 @@ int main(int argc, char* argv[]){
 			
 			//std::cout << line << std::endl;
 		 }
-		std::cout<< "PID" << "\t" << "RSS" <<"\t"<< "PSS" <<"\t"
-					<< "SWAP" << "\t"<< "MAJFL" << "\t" << "MINFL" << std::endl;
+		
+		std::cout<< std::setw(8) << std::left << "PID" << 
+					std::setw(8) << std::left << "RSS" << //std::setw(8) << std::left << 
+					std::setw(8) << std::left << "PSS" << //std::setw(8) << std::left <<
+					std::setw(8) << std::left << "SWAP" << //std::setw(8) << std::left <<
+					std::setw(8) << std::left << "MAJFL" << //std::setw(8) << std::left <<
+					std::setw(8) << std::left << "MINFL" << std::endl;
 	
 		sort(p_vector.begin(), p_vector.end(), functor(f_x));
 		for(int i= 0; i < 10; ++i){
-			std::cout << p_vector[i].pid << "\t" 
-						<< p_vector[i].rss <<"\t" 
-						<< p_vector[i].pss <<"\t"
-						<< p_vector[i].swap << "\t"
-						<< p_vector[i].majfl << "\t"
-						<< p_vector[i].minfl << "\t"
-						
+			std::cout 	<< std::setw(8) << std::left << p_vector[i].pid //<< std::setw(8)//<< "\t" 
+						<< std::setw(8) << std::left << p_vector[i].rss //<< std::setw(8)//<<"\t" 
+						<< std::setw(8) << std::left << p_vector[i].pss //<< std::setw(8)//<<"\t"
+						<< std::setw(8) << std::left << p_vector[i].swap //<< std::setw(8)//<< "\t"
+						<< std::setw(8) << std::left << p_vector[i].majfl //<< std::setw(8)//<< "\t"
+						<< std::setw(8) << std::left << p_vector[i].minfl //<< "\t"
 						<< std::endl;
 		}
 		for (int i=0; i< 12; ++i)
