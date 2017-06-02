@@ -232,8 +232,9 @@ int main(int argc, char* argv[]){
 						<< p_vector[i].rss <<"\t" 
 						<< p_vector[i].pss <<"\t"
 						<< p_vector[i].swap << "\t"
-						<< p_vector[i].minfl << "\t"
 						<< p_vector[i].majfl << "\t"
+						<< p_vector[i].minfl << "\t"
+						
 						<< std::endl;
 		}
 		for (int i=0; i< 12; ++i)
