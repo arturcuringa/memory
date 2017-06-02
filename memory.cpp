@@ -152,18 +152,24 @@ int main(int argc, char* argv[]){
 		y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
 		y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
 		
-		
-		std::cout<< std::setw(8) << std::left << "Total" << 
-					std::setw(8) << std::left << "RSS" << 
-					std::setw(8) << std::left << "PSS" <<
-					std::setw(8) << std::left << "SWAP" <<
-					std::setw(8) << std::left << "CACHE" << std::endl;
+		process w;
 
-		std::cout 	<< std::setw(8) << std::left << " " 
-					<< std::setw(8) << std::left << y.rss 
-					<< std::setw(8) << std::left << y.pss 
-					<< std::setw(8) << std::left << y.swap 
-					<< std::setw(8) << std::left << y.cache 
+		w.rss = stoi(exec((std::string("cat /proc/meminfo | grep -i MemFree | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
+		w.pss = w.rss;
+		w.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapFree | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
+		
+		
+		std::cout<< std::setw(16) << std::left << "Total" << 
+					std::setw(16) << std::left << "RSS" << 
+					std::setw(16) << std::left << "PSS" <<
+					std::setw(16) << std::left << "SWAP" <<
+					std::setw(16) << std::left << "CACHE" << std::endl;
+
+		std::cout 	<< std::setw(8) << " "  
+					<< y.rss - w.rss  << "/"<< std::setw(14) << w.rss 
+					<< y.pss - w.pss << "/" << std::setw(14) << w.pss
+					<<  y.swap - y.swap << "/" << std::setw(14) << w.swap 
+					<<  y.cache 
 					<< std::endl<<std::endl;
 
 
