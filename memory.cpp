@@ -154,15 +154,18 @@ int main(int argc, char* argv[]){
 		
 		
 		std::cout<< std::setw(8) << std::left << "Total" << 
-					std::setw(8) << std::left << "RSS" << //std::setw(8) << std::left << 
-					std::setw(8) << std::left << "PSS" << //std::setw(8) << std::left <<
+					std::setw(8) << std::left << "RSS" << 
+					std::setw(8) << std::left << "PSS" <<
+					std::setw(8) << std::left << "SWAP" <<
 					std::setw(8) << std::left << "CACHE" << std::endl;
 
-		std::cout 	<< std::setw(8) << std::left << " " //<< std::setw(8)//<< "\t" 
-					<< std::setw(8) << std::left << y.rss //<< std::setw(8)//<<"\t" 
-					<< std::setw(8) << std::left << y.pss //<< std::setw(8)//<<"\t"
-					<< std::setw(8) << std::left << y.cache //<< std::setw(8)//<< "\t"
+		std::cout 	<< std::setw(8) << std::left << " " 
+					<< std::setw(8) << std::left << y.rss 
+					<< std::setw(8) << std::left << y.pss 
+					<< std::setw(8) << std::left << y.swap 
+					<< std::setw(8) << std::left << y.cache 
 					<< std::endl<<std::endl;
+
 
 		while(getline(f,line))
 		{
@@ -213,63 +216,53 @@ int main(int argc, char* argv[]){
 					}
 				}
 
-				//if(check(std::string("/proc/"+ line +"/stat").c_str())){
-					std::ifstream fs;
-					std::string trash;
+				// Pages fault and name				
+				std::ifstream fs;
+				std::string trash;
 
-					fs.open(std::string("/proc/"+ line +"/stat").c_str(), std::ifstream::in );
-					
-					if(fs.is_open()){
-						fs>>trash;
-						fs>>x.name;
-						for (int i=3; i<10; ++i){
-							fs>>trash;
-						}
-						fs>>x.minfl;
-					}
+				fs.open(std::string("/proc/"+ line +"/stat").c_str(), std::ifstream::in );
+				
+				if(fs.is_open()){
 					fs>>trash;
-					fs>>x.majfl;
-					
-					fs.close();
-				//}
-				// std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
-				// std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
-		
-				// x.majfl = stoi(maj);
-				// x.minfl = stoi(min);
+					fs>>x.name;
+					for (int i=3; i<10; ++i){
+						fs>>trash;
+					}
+					fs>>x.minfl;
+				}
+				fs>>trash;
+				fs>>x.majfl;
+				
+				fs.close();
+				
+				//Add to vector
 				p_vector.push_back(x);
 			}
-
-			// std::string rss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Rss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
-			// std::string pss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Pss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
-			// std::string swap = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i swap | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
-			
-			//std::cout << line << std::endl;
 		 }
 		
 		std::cout<< std::setw(8) << std::left << "PID" << 
-					std::setw(8) << std::left << "RSS" << //std::setw(8) << std::left << 
-					std::setw(8) << std::left << "RSS(%)" << //std::setw(8) << std::left << 
-					std::setw(8) << std::left << "PSS" << //std::setw(8) << std::left <<
-					std::setw(8) << std::left << "PSS(%)" << //std::setw(8) << std::left <<
-					std::setw(8) << std::left << "SWAP" << //std::setw(8) << std::left <<
-					std::setw(8) << std::left << "MAJFL" << //std::setw(8) << std::left <<
-					std::setw(8) << std::left << "MINFL" <<
+					std::setw(8) << std::left << "RSS" << 
+					std::setw(8) << std::left << "RSS(%)" << 
+					std::setw(8) << std::left << "PSS" << 
+					std::setw(8) << std::left << "PSS(%)" << 
+					std::setw(8) << std::left << "SWAP" << 
+					std::setw(8) << std::left << "MAJFL" << 
+					std::setw(10) << std::left << "MINFL" <<
 					std::setw(8) << std::left << "NOME" << std::endl;
 	
 		sort(p_vector.begin(), p_vector.end(), functor(f_x));
 		double rssTotal= y.rss;
 		double pssTotal= y.pss;
 		for(int i= 0; i < 10; ++i){
-			std::cout 	<< std::setw(8) << std::left << p_vector[i].pid //<< std::setw(8)//<< "\t" 
-						<< std::setw(8) << std::left << p_vector[i].rss //<< std::setw(8)//<<"\t" 
-						<< std::setw(8) << std::left << std::setprecision(2)<<(p_vector[i].rss/rssTotal)*100 //<< std::setw(8)//<<"\t" 
-						<< std::setw(8) << std::left << p_vector[i].pss //<< std::setw(8)//<<"\t"
-						<< std::setw(8) << std::left << std::setprecision(2)<<(p_vector[i].pss/pssTotal)*100 //<< std::setw(8)//<<"\t"
-						<< std::setw(8) << std::left << p_vector[i].swap //<< std::setw(8)//<< "\t"
-						<< std::setw(8) << std::left << p_vector[i].majfl //<< std::setw(8)//<< "\t"
-						<< std::setw(8) << std::left << p_vector[i].minfl //<< "\t"
-						<< std::setw(8) << std::left << p_vector[i].name //<< "\t"
+			std::cout 	<< std::setw(8) << std::left << p_vector[i].pid 
+						<< std::setw(8) << std::left << p_vector[i].rss 
+						<< std::setw(8) << std::left << std::setprecision(2)<<(p_vector[i].rss/rssTotal)*100  
+						<< std::setw(8) << std::left << p_vector[i].pss 
+						<< std::setw(8) << std::left << std::setprecision(2)<<(p_vector[i].pss/pssTotal)*100 
+						<< std::setw(8) << std::left << p_vector[i].swap 
+						<< std::setw(8) << std::left << p_vector[i].majfl 
+						<< std::setw(10) << std::left << p_vector[i].minfl 
+						<< std::setw(8) << std::left << p_vector[i].name 
 						<< std::endl;
 		}
 		for (int i=0; i< 14; ++i)
