@@ -62,21 +62,21 @@ int main(){
 	std::vector<process> p_vector;
 	
 	//Global
-	// process y;
-	// y.pid = -1;
-	// y.rss = stoi(exec((std::string("cat /proc/meminfo | grep -i MemTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
-	// y.pss = y.rss;
-	// y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
-	// y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
-	// std::cout << " Total" << " " << y.rss << " " << y.pss << " " << y.swap << " " << y.cache << std::endl;
+	process y;
+	y.pid = -1;
+	y.rss = stoi(exec((std::string("cat /proc/meminfo | grep -i MemTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
+	y.pss = y.rss;
+	y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
+	y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
+	std::cout << " Total" << " " << y.rss << " " << y.pss << " " << y.swap << " " << y.cache << std::endl;
 	
-	// while(getline(f,line))
-	// {
+	while(getline(f,line))
+	{
 
-		std::string path = "/proc/1/";
+		std::string path = "/proc/" + line + "/";
 		
 		process x;
-		//x.pid = stoi(line);
+		x.pid = stoi(line);
 		
 		if(check(path.c_str()))
 		{
@@ -88,6 +88,7 @@ int main(){
 			long unsigned int rss, pss, swap;
 			while(getline(f,l))
 			{
+				//std::cout << l << std::endl;
 				if(l.compare(0, 3, "Rss") == 0)
 				{
 					std::string trash;
@@ -114,11 +115,11 @@ int main(){
 					x.swap += swap;
 				}
 			}
-			std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
-			std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
+			// std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
+			// std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
 	
-			x.majfl = stoi(maj);
-			x.minfl = stoi(min);
+			// x.majfl = stoi(maj);
+			// x.minfl = stoi(min);
 			p_vector.push_back(x);
 		}
 
@@ -127,7 +128,7 @@ int main(){
 		// std::string swap = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i swap | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
 		
 		//std::cout << line << std::endl;
-	// }
+	 }
 	std::cout<< "PID" << "\t" << "RSS" <<"\t"<< "PSS" <<"\t"
 				<< "SWAP" << "\t"<< "MAJFL" << "\t" << "MINFL" << std::endl;
 	
@@ -137,8 +138,7 @@ int main(){
 						<< p_vector[i].rss <<"\t" 
 						<< p_vector[i].pss <<"\t"
 						<< p_vector[i].swap << "\t"
-						<< p_vector[i].majfl << "\t" 
-						<< p_vector[i].minfl << std::endl;
+						<< std::endl;
 		}
 		for (int i=0; i< 10; ++i)
 			std::cout<<"\033[A";
