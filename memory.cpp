@@ -4,6 +4,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <cstring>
 #include <array>
 #include <queue>
 #include <sys/stat.h>
@@ -93,8 +94,40 @@ bool isInteger(const std::string & s)
 }
 ///////////////////////////////////////////////////////////
 
-int main(){
+int main(int argc, char* argv[]){
 	//while (true){
+	int f_x;
+	if(argc > 1)
+	{
+		if(std::string(argv[1]) == "-pid")
+		{
+			f_x = 0;
+		}
+		if(std::string(argv[1]) == "-rss")
+		{
+			f_x = 1;
+		}
+		if(std::string(argv[1]) ==  "-pss")
+		{
+			f_x = 2;
+
+		}
+		if(std::string(argv[1]) == "-swap")
+		{
+			f_x = 3;
+		}
+		if(std::string(argv[1]) == "-majf")
+		{
+			f_x = 5;
+		}
+		if(std::string(argv[1]) ==  "-minf")
+		{
+			f_x = 6;
+		}
+	}else
+	{
+		f_x = 2;
+	}
 	std::istringstream f (exec((std::string("ps aux | awk '{print $2}' ")).c_str()));
 	std::string line;
 	getline(f,line);
@@ -191,9 +224,8 @@ int main(){
 	 }
 	std::cout<< "PID" << "\t" << "RSS" <<"\t"<< "PSS" <<"\t"
 				<< "SWAP" << "\t"<< "MAJFL" << "\t" << "MINFL" << std::endl;
-	
 	while(true){
-		sort(p_vector.begin(), p_vector.end(), functor(1));
+		sort(p_vector.begin(), p_vector.end(), functor(f_x));
 		for(int i= 0; i < 10; ++i){
 			std::cout << p_vector[i].pid << "\t" 
 						<< p_vector[i].rss <<"\t" 
