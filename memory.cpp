@@ -175,8 +175,8 @@ int main(int argc, char* argv[]){
 
 		std::cout 	<< std::setw(10) << std::left <<"Used"
 					<< std::setw(10) << std::left << y.rss - w.rss
-					<< std::setw(10) << std::left << y.rss - w.rss
-					<< std::setw(10) << std::left << y.rss - w.rss
+					<< std::setw(10) << std::left << y.pss - w.pss
+					<< std::setw(10) << std::left << y.swap - w.swap
 					<< std::setw(10) << std::left << " "
 					<< std::endl << std::endl;
 
