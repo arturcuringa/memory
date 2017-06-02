@@ -8,7 +8,7 @@
 #include <queue>
 #include <sys/stat.h>
 #include <unistd.h>
-
+#include <fstream>
 
 typedef struct{
 	int pid;
@@ -40,6 +40,15 @@ std::string exec(const char* path, const char* cmd) {
 	}return "";
 }
 
+bool check(const char* path) {
+	struct stat sb;
+
+	if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode)){
+		return true;
+	}
+	return false;
+}
+
 bool isInteger(const std::string & s)
 {
    if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
@@ -53,44 +62,77 @@ int main(){
 	std::vector<process> p_vector;
 	
 	//Global
-	process y;
-	y.pid = -1;
-	y.rss = stoi(exec((std::string("cat /proc/meminfo | grep -i MemTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
-	y.pss = y.rss;
-	y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
-	y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
-	std::cout << " Total" << " " << y.rss << " " << y.pss << " " << y.swap << " " << y.cache << std::endl;
+	// process y;
+	// y.pid = -1;
+	// y.rss = stoi(exec((std::string("cat /proc/meminfo | grep -i MemTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
+	// y.pss = y.rss;
+	// y.swap = stoi(exec((std::string("cat /proc/meminfo | grep -i SwapTotal | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str())); 
+	// y.cache = stoi(exec((std::string("cat /proc/meminfo | grep -i Cached | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:]")).c_str()));
+	// std::cout << " Total" << " " << y.rss << " " << y.pss << " " << y.swap << " " << y.cache << std::endl;
 	
-	while(getline(f,line))
-	{
+	// while(getline(f,line))
+	// {
 
-		std::string path = "/proc/" + line + "/";
+		std::string path = "/proc/1/";
 		
 		process x;
-		x.pid = stoi(line);
+		//x.pid = stoi(line);
 		
-		std::string rss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Rss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
-		std::string pss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Pss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
-		std::string swap = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i swap | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
-		std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
-		std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
-		
-		if(isInteger (rss) && isInteger(pss) && isInteger(swap) )
+		if(check(path.c_str()))
 		{
-			x.rss = stoi(rss);
-			x.pss = stoi(rss);
-			x.swap = stoi(rss);
+			std::ifstream f(path+ "smaps");
+			std::string l;
+			x.rss = 0;
+			x.pss = 0;
+			x.swap = 0;
+			long unsigned int rss, pss, swap;
+			while(getline(f,l))
+			{
+				if(l.compare(0, 3, "Rss") == 0)
+				{
+					std::string trash;
+					std::stringstream ss(l);
+					//std::cout<< l << std::endl;
+					ss >> trash;
+					ss >> rss;
+					x.rss += rss;
+				}
+				if(l.compare(0, 3, "Pss") == 0)
+				{
+					std::string trash;
+					std::stringstream ss(l);
+					ss >> trash;
+					ss >> pss;
+					x.pss += pss;
+				}
+				if(l.compare(0, 4, "Swap") == 0)
+				{
+					std::string trash;
+					std::stringstream ss(l);
+					ss >> trash;
+					ss >> swap;
+					x.swap += swap;
+				}
+			}
+			std::string maj = exec(path.c_str(),std::string("ps -o maj_flt "+ line +"| awk 'NR==2'").c_str());
+			std::string min = exec(path.c_str(),std::string("ps -o min_flt "+ line +"| awk 'NR==2'").c_str());
+	
 			x.majfl = stoi(maj);
 			x.minfl = stoi(min);
 			p_vector.push_back(x);
 		}
+
+		// std::string rss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Rss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
+		// std::string pss = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i Pss | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
+		// std::string swap = exec(path.c_str(),(std::string( "sudo cat " + path + "smaps | grep -i swap | tr -s [:space:] | tr -d [:alpha:] | tr -d [:punct:] | awk '{ SUM += $1} END { print SUM }'")).c_str());
+		
 		//std::cout << line << std::endl;
-	}
+	// }
 	std::cout<< "PID" << "\t" << "RSS" <<"\t"<< "PSS" <<"\t"
 				<< "SWAP" << "\t"<< "MAJFL" << "\t" << "MINFL" << std::endl;
 	
 	while(true){
-		for(int i=0; i < 10; ++i){
+		for(int i= 0; i < 10; ++i){
 			std::cout << p_vector[i].pid << "\t" 
 						<< p_vector[i].rss <<"\t" 
 						<< p_vector[i].pss <<"\t"
